@@ -1,6 +1,6 @@
 package by.itacademy.training.bank;
 
-public class Accounts {
+public class BankAccounts {
 
     private String cardId, cardPin, cardValue;
 
@@ -31,10 +31,10 @@ public class Accounts {
     public void setCardValue(String cardValue) {
         this.cardValue = cardValue;
     }
-    public Accounts() {
+    public BankAccounts() {
     }
 
-    public Accounts(String cardId, String cardPin, String cardValue) {
+    public BankAccounts(String cardId, String cardPin, String cardValue) {
         this.cardId = cardId;
         this.cardPin = cardPin;
         this.cardValue = cardValue;

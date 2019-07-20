@@ -40,6 +40,8 @@ public class CashMachineDriver {
             System.out.println("Сумма пополнения превышает 1 000 000");
             cashMachine.yesNo();
         }
+        cashMachineMoney.setMoney(cashMachineMoney.getMoney() + cash);
+        cashMachineMoney.setCashMachineMoney();
         System.out.println("Операция выполнена успешно, вы пополнили счет на: " + cash);
         return value = String.format("%.2f", stringToDouble(value) + cash).replace(',', '.');
 

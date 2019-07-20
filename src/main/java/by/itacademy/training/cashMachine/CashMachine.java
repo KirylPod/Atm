@@ -1,6 +1,6 @@
 package by.itacademy.training.cashMachine;
 
-import by.itacademy.training.bank.Accounts;
+import by.itacademy.training.bank.BankAccounts;
 import by.itacademy.training.bank.BankServer;
 
 import java.io.IOException;
@@ -10,12 +10,11 @@ import java.util.regex.Pattern;
 public class CashMachine {
 
     private BankServer bankServer;
-    private Accounts account;
+    private BankAccounts account;
     private CashMachineDriver cashMachineDriver;
+    private static CashMachineMoney cashMachineMoney;
 
     private static Scanner scanner = new Scanner(System.in);
-
-//    private CashMachineDriver cashMachineDriver = new CashMachineDriver();
 
     public void actionId() throws IOException {
 
@@ -25,11 +24,9 @@ public class CashMachine {
 
         if (Pattern.matches("^\\d{4}-\\d{4}-\\d{4}-\\d{4}$", clientCardId)) {
             System.out.println("Отлично");
-            //            cashMachineDriver.request(clientCardId);
 
             account = bankServer.getAccount(clientCardId);
             actionPin(account.getCardPin());
-
 
             scanner.close();
         } else {
@@ -40,7 +37,6 @@ public class CashMachine {
 
     private void actionPin(String cardPin) throws IOException {
 
-        System.out.println(" tranzactionPin = " + cardPin);
         System.out.println("Введите пин-код, состоящий из цифр, в формате: ХХХХ");
 
         String clientCardPin = scanner.nextLine();
@@ -48,11 +44,12 @@ public class CashMachine {
         System.out.println("Pin code " + clientCardPin);
 
         if (Pattern.matches("^\\d{4}", clientCardPin) && clientCardPin.equals(cardPin)) {
-            System.out.println("Отлично");
+
+            cashMachineMoney.getCashMachineMoney();
             operation();
 
         } else {
-            System.out.println("Ошибка");
+            System.out.println("Ошибка ввода пин-кода");
             actionPin(cardPin);
         }
         scanner.close();
@@ -72,7 +69,6 @@ public class CashMachine {
                 yesNo();
                 break;
             case 2:
-
                     account.setCardValue(cashMachineDriver.getCash(account.getCardValue()));
                     yesNo();
                 break;
@@ -100,6 +96,7 @@ public class CashMachine {
                 break;
             case 2:
                 bankServer.setNewValue(account.getCardId(), account.getCardValue());
+                cashMachineMoney.setCashMachineMoney();
                 break;
 
             default:

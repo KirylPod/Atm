@@ -17,17 +17,18 @@ public class CashMachineMoney {
         CashMachineMoney.money = money;
     }
 
-    public static Double getCashMachineMoney() throws IOException {
+    public static void getCashMachineMoney() throws IOException {
         file = new File("src/main/resources/money");
         BufferedReader reader = new BufferedReader(new FileReader(file));
-        money = Double.parseDouble(reader.readLine());
-        return money;
+        setMoney(Double.parseDouble(reader.readLine()));
+
     }
 
-//    public static void setCashMachineMoney(double money) throws IOException {
-//        file = new File("src/main/resources/money");
-//        FileWriter writer = new FileWriter(file, false);
-//        writer.write();
+    public static void setCashMachineMoney() throws IOException {
+        FileWriter writer = new FileWriter(file, false);
+        writer.write(String.format("%.2f", getMoney()).replace(',', '.'));
+        writer.close();
 
+    }
 }
 
