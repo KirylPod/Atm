@@ -1,53 +1,56 @@
 package by.itacademy.training.cashMachine;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Scanner;
+import java.io.InputStreamReader;
 
 public class CashMachineDriver {
 
     private static CashMachine cashMachine;
     private static CashMachineMoney cashMachineMoney;
-    private static Scanner scanner = new Scanner(System.in);
+    private static CashMashinePrint cashMashinePrint;
+
+    private static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
     public static String getValue(String value) throws IOException {
         System.out.println("На вашем счету = " + value);
         return value;
-
     }
 
     public static String getCash(String value) throws IOException {
-        double cash;
+        int cash;
         System.out.println("Введите сумму, которую желаете снять");
-        cash = scanner.nextDouble();
-        if (cash > stringToDouble(value)) {
-            System.out.println("Недостаточно средств на счете");
-            cashMachine.yesNo();
+        cash = Integer.parseInt(input.readLine());
+
+        if (cash > stringToInt(value)) {
+            cashMashinePrint.errorGetCashId();
         }
         if (cash >= cashMachineMoney.getMoney()) {
-            System.out.println("Недостаточно средств в банкомате");
-            cashMachine.yesNo();
+            cashMashinePrint.errorGetCashMachine();
         }
+
         System.out.println("Операция выполнена успешно, заберите деньги: " + cash);
         cashMachineMoney.setMoney(cashMachineMoney.getMoney() - cash);
-        return String.format("%.2f", stringToDouble(value) - cash).replace(',', '.');  // тут костыль
+
+        return value = String.valueOf(stringToInt(value) - cash);
+
     }
 
     public static String setValue(String value) throws IOException {
-        double cash;
+        int cash;
         System.out.println("Введите сумму, на которую желаете пополнить счет");
-        cash = scanner.nextInt();
+        cash = Integer.parseInt(input.readLine());
         if (cash >= 1000000) {
-            System.out.println("Сумма пополнения превышает 1 000 000");
-            cashMachine.yesNo();
+            cashMashinePrint.errorSetCashMachine();
         }
         cashMachineMoney.setMoney(cashMachineMoney.getMoney() + cash);
         cashMachineMoney.setCashMachineMoney();
         System.out.println("Операция выполнена успешно, вы пополнили счет на: " + cash);
-        return value = String.format("%.2f", stringToDouble(value) + cash).replace(',', '.');
 
+        return value = String.valueOf(stringToInt(value) + cash);
     }
 
-    public static Double stringToDouble(String str) {
-        return Double.parseDouble(str);
+    public static Integer stringToInt (String str) {
+        return Integer.parseInt(str);
     }
 }

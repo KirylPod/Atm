@@ -6,6 +6,7 @@ public class CashMachineMoney {
 
     private static double money;
     private static File file;
+    private static CashMashinePrint cashMashinePrint;
 
     public static double getMoney() {
 

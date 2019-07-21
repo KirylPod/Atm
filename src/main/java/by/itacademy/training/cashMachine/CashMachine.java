@@ -1,108 +1,128 @@
 package by.itacademy.training.cashMachine;
 
+import by.itacademy.training.Client.Client;
 import by.itacademy.training.bank.BankAccounts;
 import by.itacademy.training.bank.BankServer;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Scanner;
+import java.io.InputStreamReader;
 import java.util.regex.Pattern;
+
+import static by.itacademy.training.Client.Client.getClientCardId;
 
 public class CashMachine {
 
-    private BankServer bankServer;
-    private BankAccounts account;
-    private CashMachineDriver cashMachineDriver;
+    private static Client client;
+    private static BankServer bankServer;
+    private static BankAccounts account;
+    private static CashMachineDriver cashMachineDriver;
     private static CashMachineMoney cashMachineMoney;
+    private static CashMashinePrint cashMashinePrint;
 
-    private static Scanner scanner = new Scanner(System.in);
+    private static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
-    public void actionId() throws IOException {
+
+    public static void actionId() throws IOException {
 
         System.out.println("Введите номер карты, состоящий из цифр, в формате: ХХХХ-ХХХХ-ХХХХ-ХХХХ");
 
-        String clientCardId = scanner.nextLine();
 
-        if (Pattern.matches("^\\d{4}-\\d{4}-\\d{4}-\\d{4}$", clientCardId)) {
-            System.out.println("Отлично");
+        client.setClientCardId(input.readLine());
 
-            account = bankServer.getAccount(clientCardId);
-            actionPin(account.getCardPin());
-
-            scanner.close();
+        if (Pattern.matches("^\\d{4}-\\d{4}-\\d{4}-\\d{4}$", getClientCardId())) {
+            valid(getClientCardId());
         } else {
-            System.out.println("Введенный номер карты не соотвествует заданному формату");
-            actionId();
+            cashMashinePrint.errorCardId();
         }
+        input.close();
     }
 
-    private void actionPin(String cardPin) throws IOException {
+    public static void valid(String getClientCardId) throws IOException {
+        account = bankServer.getAccount(getClientCardId);
+        actionPin(account.getCardPin());
+        if (account == null) {
+            cashMashinePrint.errorCardId();
+        }
+
+    }
+
+    public static void actionPin(String cardPin) throws IOException {
 
         System.out.println("Введите пин-код, состоящий из цифр, в формате: ХХХХ");
 
-        String clientCardPin = scanner.nextLine();
+        client.setClientCardPin(input.readLine());
 
-        System.out.println("Pin code " + clientCardPin);
-
-        if (Pattern.matches("^\\d{4}", clientCardPin) && clientCardPin.equals(cardPin)) {
+        if (Pattern.matches("^\\d{4}", client.getClientCardPin()) && client.getClientCardPin().equals(cardPin)) {
 
             cashMachineMoney.getCashMachineMoney();
             operation();
-
         } else {
-            System.out.println("Ошибка ввода пин-кода");
-            actionPin(cardPin);
+            cashMashinePrint.errorCardPin(cardPin);
         }
-        scanner.close();
+        input.close();
     }
 
-    private void operation() throws IOException {
+    public static void operation() throws IOException {
 
         System.out.println("1 - Проверить баланс");
         System.out.println("2 - Снять наличные");
         System.out.println("3 - Пополнить баланс");
-        System.out.println("4 - Закончить");
+        System.out.println("4 - Вернуть карту");
 
-        int num = scanner.nextInt();
-        switch (num) {
-            case 1:
-                account.setCardValue(cashMachineDriver.getValue(account.getCardValue()));
-                yesNo();
-                break;
-            case 2:
+        String num = input.readLine();
+        if (Pattern.matches("^[1-4]{1}", num)) {
+            switch (num) {
+                case "1":
+                    account.setCardValue(cashMachineDriver.getValue(account.getCardValue()));
+                    yesNo();
+                    break;
+                case "2":
                     account.setCardValue(cashMachineDriver.getCash(account.getCardValue()));
                     yesNo();
-                break;
-            case 3:
+                    break;
+                case "3":
                     account.setCardValue(cashMachineDriver.setValue(account.getCardValue()));
                     yesNo();
-                break;
-            case 4:
-                bankServer.setNewValue(account.getCardId(), account.getCardValue());
-                break;
-            default:
-                break;
+                    break;
+                case "4":
+                    System.out.println("Заберите вашу карту");
+                    bankServer.setNewValue(account.getCardId(), account.getCardValue());
+                    cashMachineMoney.setCashMachineMoney();
+                    cashMashinePrint.successCardId();
+                    break;
+            }
+
+        } else {
+            cashMashinePrint.errorInputOperation();
+
         }
-        scanner.close();
+        input.close();
     }
 
-    public void yesNo() throws IOException {
+    public static void yesNo() throws IOException {
         System.out.println("Желаете продолжить?");
         System.out.println("1 - Продолжить");
         System.out.println("2 - Отмена");
-        int num = scanner.nextInt();
-        switch (num) {
-            case 1:
-                operation();
-                break;
-            case 2:
-                bankServer.setNewValue(account.getCardId(), account.getCardValue());
-                cashMachineMoney.setCashMachineMoney();
-                break;
+        String num = input.readLine();
 
-            default:
-                actionId();
-                break;
+
+        if (Pattern.matches("^[1-2]{1}", num)) {
+            switch (num) {
+                case "1":
+                    operation();
+                    break;
+                case "2":
+                    System.out.println("Заберите вашу карту");
+                    bankServer.setNewValue(account.getCardId(), account.getCardValue());
+                    cashMachineMoney.setCashMachineMoney();
+                    cashMashinePrint.successCardId();
+                    break;
+            }
+        }else {
+            cashMashinePrint.errorInputYesNo();
         }
-        scanner.close();
+        input.close();
     }
+
 }
