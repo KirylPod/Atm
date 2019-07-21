@@ -1,6 +1,6 @@
 package by.itacademy.training.bank;
 
-import by.itacademy.training.Client.Client;
+import by.itacademy.training.сlient.Client;
 
 import java.io.IOException;
 

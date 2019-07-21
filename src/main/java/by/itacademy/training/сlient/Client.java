@@ -1,4 +1,4 @@
-package by.itacademy.training.Client;
+package by.itacademy.training.сlient;
 
 import by.itacademy.training.cashMachine.CashMachine;
 

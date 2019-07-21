@@ -1,6 +1,6 @@
 package by.itacademy.training.cashMachine;
 
-import by.itacademy.training.Client.Client;
+import by.itacademy.training.сlient.Client;
 import by.itacademy.training.bank.BankAccounts;
 import by.itacademy.training.bank.BankServer;
 
@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.regex.Pattern;
 
-import static by.itacademy.training.Client.Client.getClientCardId;
+import static by.itacademy.training.сlient.Client.getClientCardId;
 
 public class CashMachine {
 
